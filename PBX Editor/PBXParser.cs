@@ -116,6 +116,32 @@ namespace UnityEditor.XCodeEditor
 
 				return null;
 			}
+            else if (entity is PBXTargetDependency)
+            {
+                PBXTargetDependency obj = (PBXTargetDependency)entity;
+                //Debug.LogWarning ("PBXNativeTarget " + guid + " " + obj.ToString());
+
+                if (obj.data.ContainsKey("name"))
+                {
+                    //Debug.Log ("PBXNativeTarget " + (string)obj.data[ "name" ] + " " + guid);
+                    return (string)obj.data["name"];
+                }
+
+                return null;
+            }
+            else if (entity is PBXContainerItemProxy)
+            {
+                PBXContainerItemProxy obj = (PBXContainerItemProxy)entity;
+                //Debug.LogWarning ("PBXNativeTarget " + guid + " " + obj.ToString());
+
+                if (obj.data.ContainsKey("name"))
+                {
+                    //Debug.Log ("PBXNativeTarget " + (string)obj.data[ "name" ] + " " + guid);
+                    return (string)obj.data["name"];
+                }
+
+                return null;
+            }
 			else if( entity is XCBuildConfiguration )
 			{
 				XCBuildConfiguration obj = (XCBuildConfiguration)entity;

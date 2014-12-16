@@ -144,4 +144,13 @@ namespace UnityEditor.XCodeEditor
 		public PBXReferenceProxy( string guid, PBXDictionary dictionary ) : base( guid, dictionary ) {	
 		}
 	}
+
+    public class PBXTargetDependency : PBXObject
+    {
+        public PBXTargetDependency() : base() {
+		}
+
+        public PBXTargetDependency(string guid, PBXDictionary dictionary) : base(guid, dictionary) {	
+		}
+    }
 }

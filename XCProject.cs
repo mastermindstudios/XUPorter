@@ -31,6 +31,8 @@ namespace UnityEditor.XCodeEditor
 		private PBXSortedDictionary<PBXGroup> _groups;
 		private PBXSortedDictionary<PBXFileReference> _fileReferences;
 		private PBXDictionary<PBXNativeTarget> _nativeTargets;
+	    private PBXDictionary<PBXTargetDependency> _targetDependencies;
+	    private PBXDictionary<PBXContainerItemProxy> _itemProxies;
 		
 		private PBXDictionary<PBXFrameworksBuildPhase> _frameworkBuildPhases;
 		private PBXDictionary<PBXResourcesBuildPhase> _resourcesBuildPhases;
@@ -172,7 +174,30 @@ namespace UnityEditor.XCodeEditor
 				return _nativeTargets;
 			}
 		}
-		
+
+        public PBXDictionary<PBXTargetDependency> targetDependencies {
+            get
+            {
+                if (_targetDependencies == null)
+                {
+                    _targetDependencies = new PBXDictionary<PBXTargetDependency>(_objects);
+                }
+                return _targetDependencies;
+            }
+        }
+
+        public PBXDictionary<PBXContainerItemProxy> itemProxies
+        {
+            get
+            {
+                if (_itemProxies == null)
+                {
+                    _itemProxies = new PBXDictionary<PBXContainerItemProxy>(_objects);
+                }
+                return _itemProxies;
+            }
+        }
+
 		public PBXDictionary<XCBuildConfiguration> buildConfigurations {
 			get {
 				if( _buildConfigurations == null ) {
@@ -279,7 +304,7 @@ namespace UnityEditor.XCodeEditor
 					buildConfig.Value.overwriteBuildSetting(settingName, newValue);
 					modified = true;
 				} else {
-					//Debug.LogWarning ("skipping " + buildConfigName + " config " + (string)b.data["name"]);
+					Debug.LogWarning ("skipping " + buildConfigName + " config " + (string)b.data["name"]);
 				}
 			}
 			return modified;
@@ -690,6 +715,7 @@ namespace UnityEditor.XCodeEditor
 		{
 			PBXDictionary consolidated = new PBXDictionary();
 			consolidated.Append<PBXBuildFile>( this.buildFiles );//sort!
+            consolidated.Append<PBXContainerItemProxy>(this.itemProxies);
 			consolidated.Append<PBXCopyFilesBuildPhase>( this.copyBuildPhases );
 			consolidated.Append<PBXFileReference>( this.fileReferences );//sort!
 			consolidated.Append<PBXFrameworksBuildPhase>( this.frameworkBuildPhases );
@@ -699,10 +725,11 @@ namespace UnityEditor.XCodeEditor
 			consolidated.Append<PBXResourcesBuildPhase>( this.resourcesBuildPhases );
 			consolidated.Append<PBXShellScriptBuildPhase>( this.shellScriptBuildPhases );
 			consolidated.Append<PBXSourcesBuildPhase>( this.sourcesBuildPhases );
+            consolidated.Append<PBXTargetDependency>(this.targetDependencies);
 			consolidated.Append<PBXVariantGroup>( this.variantGroups );
 			consolidated.Append<XCBuildConfiguration>( this.buildConfigurations );
 			consolidated.Append<XCConfigurationList>( this.configurationLists );
-			_objects = consolidated;
+            _objects = consolidated;
 			consolidated = null;
 		}
 
@@ -750,10 +777,15 @@ namespace UnityEditor.XCodeEditor
 			
 			string projectPath = Path.Combine( this.filePath, "project.pbxproj" );
 
+		    Debug.Log("saving projectPath: " + projectPath);
+
 			// Delete old project file, in case of an IOException 'Sharing violation on path Error'
 			DeleteExisting(projectPath);
 
 			// Parse result object directly into file
+
+            Debug.Log("result = " + result.ToCSV());
+            Debug.Log("project path = " + projectPath);
 			CreateNewProject(result,projectPath);
 		}
 		
