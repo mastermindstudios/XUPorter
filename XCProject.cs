@@ -763,7 +763,7 @@ namespace UnityEditor.XCodeEditor
 		/// <summary>
 		/// Saves a project after editing.
 		/// </summary>
-		public void Save()
+		public void Save(bool saveNew = false)
 		{
 			PBXDictionary result = new PBXDictionary();
 			result.Add( "archiveVersion", 1 );
@@ -779,14 +779,24 @@ namespace UnityEditor.XCodeEditor
 
 		    Debug.Log("saving projectPath: " + projectPath);
 
-			// Delete old project file, in case of an IOException 'Sharing violation on path Error'
-			DeleteExisting(projectPath);
-
+            
 			// Parse result object directly into file
 
             Debug.Log("result = " + result.ToCSV());
             Debug.Log("project path = " + projectPath);
-			CreateNewProject(result,projectPath);
+
+		    string newProjectPath = Path.Combine( this.filePath, "project.pbxproj" );
+            if (saveNew)
+            {
+                newProjectPath = Path.Combine(this.filePath, "project2.pbxproj");
+            }
+            else
+            {
+                // Delete old project file, in case of an IOException 'Sharing violation on path Error'
+                DeleteExisting(projectPath);
+            }
+
+            CreateNewProject(result, newProjectPath);
 		}
 		
 		/**
