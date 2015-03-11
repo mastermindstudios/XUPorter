@@ -68,7 +68,7 @@ namespace UnityEditor.XCodeEditor
 				this.projectRootPath = Path.GetDirectoryName( filePath );
 				this.filePath = filePath;
 			} else {
-				Debug.Log( "Looking for xcodeproj files in " + filePath );
+                //Debug.Log( "Looking for xcodeproj files in " + filePath );
 				string[] projects = System.IO.Directory.GetDirectories( filePath, "*.xcodeproj" );
 				if( projects.Length == 0 ) {
 					Debug.LogWarning( "Error: missing xcodeproj file" );
@@ -295,7 +295,6 @@ namespace UnityEditor.XCodeEditor
 		}
 		
 		public bool overwriteBuildSetting( string settingName, string newValue, string buildConfigName = "all") {
-			Debug.Log("overwriteBuildSetting " + settingName + " " + newValue + " " + buildConfigName);
 			foreach( KeyValuePair<string, XCBuildConfiguration> buildConfig in buildConfigurations ) {
 				//Debug.Log ("build config " + buildConfig);
 				XCBuildConfiguration b = buildConfig.Value;
@@ -778,13 +777,9 @@ namespace UnityEditor.XCodeEditor
 			
 			string projectPath = Path.Combine( this.filePath, "project.pbxproj" );
 
-		    Debug.Log("saving projectPath: " + projectPath);
-
+		    Debug.Log("saving project: " + projectPath);
             
 			// Parse result object directly into file
-
-            Debug.Log("result = " + result.ToCSV());
-            Debug.Log("project path = " + projectPath);
 
 		    string newProjectPath = Path.Combine( this.filePath, "project.pbxproj" );
             if (saveNew)

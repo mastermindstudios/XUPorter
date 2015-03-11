@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 namespace UnityEditor.XCodeEditor
 {
@@ -169,16 +168,13 @@ namespace UnityEditor.XCodeEditor
 		}
 		
 		public bool overwriteBuildSetting(string settingName, string settingValue) {
-			Debug.Log ("overwriteBuildSetting " + settingName + " " + settingValue);
 			bool modified = false;
 			
 			if( !ContainsKey( BUILDSETTINGS_KEY ) ) {
-				Debug.Log ("creating key " + BUILDSETTINGS_KEY);
 				this.Add( BUILDSETTINGS_KEY, new PBXSortedDictionary() );
 			}
 				
 			if( !((PBXDictionary)_data[BUILDSETTINGS_KEY]).ContainsKey( settingName ) ) {
-				Debug.Log("adding key " + settingName);
 				 ((PBXDictionary)_data[BUILDSETTINGS_KEY]).Add( settingName, new PBXList() );
 			}
 			else if ( ((PBXDictionary)_data[BUILDSETTINGS_KEY])[ settingName ] is string ) {
@@ -189,7 +185,6 @@ namespace UnityEditor.XCodeEditor
 			}
 			
 			if( !((PBXList)((PBXDictionary)_data[BUILDSETTINGS_KEY])[settingName]).Contains( settingValue ) ) {
-				Debug.Log("setting " + settingName + " to " + settingValue);
 				((PBXList)((PBXDictionary)_data[BUILDSETTINGS_KEY])[settingName]).Add( settingValue );
 				modified = true;
 				}

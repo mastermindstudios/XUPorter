@@ -303,7 +303,7 @@ namespace UnityEditor.XCodeEditor
 				return true;
 			} else {
 				//string other = this.resolver.ResolveConfigurationNameForFile( guid );
-				Debug.Log ("GUIDComment " + guid + " [no filename]");	
+                //Debug.Log ("GUIDComment " + guid + " [no filename]");	
 			}
 
 			return false;
