@@ -722,6 +722,12 @@ namespace UnityEditor.XCodeEditor
 		#endregion
 
 		#region Mods		
+
+	    public void ApplyMod(string rootPath, string pbxmod)
+	    {
+	        ApplyMod(Path.Combine(rootPath, pbxmod));
+	    }
+
 		public void ApplyMod( string pbxmod )
 		{
 			XCMod mod = new XCMod( pbxmod );
