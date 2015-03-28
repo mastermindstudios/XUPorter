@@ -86,6 +86,11 @@ namespace UnityEditor.XCodeEditor
 				return (ArrayList)_datastore["embed_binaries"];
 			}
 		}
+
+	    public XCMod(string projectPath, string filename) : this(filename)
+	    {
+	        path = projectPath;
+	    }
 		
 		public XCMod( string filename )
 		{	
@@ -111,6 +116,7 @@ namespace UnityEditor.XCodeEditor
 	{
 		public string filePath { get; private set; }
 		public bool isWeak { get; private set; }
+        public string sourceTree { get; private set; }
 		
 		public XCModFile( string inputString )
 		{
@@ -119,7 +125,11 @@ namespace UnityEditor.XCodeEditor
 			if( inputString.Contains( ":" ) ) {
 				string[] parts = inputString.Split( ':' );
 				filePath = parts[0];
-				isWeak = ( parts[1].CompareTo( "weak" ) == 0 );	
+				isWeak = ( parts[1].CompareTo( "weak" ) == 0 );
+                if (System.Array.IndexOf(parts, "<group>", 1) > 0)
+                    sourceTree = "GROUP";
+                else
+                    sourceTree = "SDKROOT";
 			}
 			else {
 				filePath = inputString;

@@ -380,7 +380,7 @@ namespace UnityEditor.XCodeEditor
 			}
 			
 			if( !( File.Exists( absPath ) || Directory.Exists( absPath ) ) && tree.CompareTo( "SDKROOT" ) != 0 ) {
-				Debug.Log( "Missing file: " + filePath );
+				Debug.LogWarning( "Missing file: " + filePath );
 				return results;
 			}
 			else if( tree.CompareTo( "SOURCE_ROOT" ) == 0 ) {
@@ -725,7 +725,12 @@ namespace UnityEditor.XCodeEditor
 
 	    public void ApplyMod(string rootPath, string pbxmod)
 	    {
-	        ApplyMod(Path.Combine(rootPath, pbxmod));
+            XCMod mod = new XCMod(rootPath, pbxmod);
+            foreach (var lib in mod.libs)
+            {
+                Debug.Log("Library: " + lib);
+            }
+            ApplyMod(mod);
 	    }
 
 		public void ApplyMod( string pbxmod )
@@ -744,9 +749,15 @@ namespace UnityEditor.XCodeEditor
 			Debug.Log( "Adding libraries..." );
 			
 			foreach( XCModFile libRef in mod.libs ) {
-				string completeLibPath = System.IO.Path.Combine( "usr/lib", libRef.filePath );
-				Debug.Log ("Adding library " + completeLibPath);
-				this.AddFile( completeLibPath, modGroup, "SDKROOT", true, libRef.isWeak );
+				string completeLibPath;
+                if(libRef.sourceTree.Equals("SDKROOT")) {
+					completeLibPath = System.IO.Path.Combine( "usr/lib", libRef.filePath );
+				}
+				else {
+					completeLibPath = System.IO.Path.Combine( mod.path, libRef.filePath );
+				}
+
+				this.AddFile( completeLibPath, modGroup, libRef.sourceTree, true, libRef.isWeak );
 			}
 			
 			Debug.Log( "Adding frameworks..." );
@@ -795,15 +806,23 @@ namespace UnityEditor.XCodeEditor
 				}
 			}
 
-			Debug.Log( "Adding compiler flags..." );
-			foreach( string flag in mod.compiler_flags ) {
-				this.AddOtherCFlags( flag );
-			}
+		    if (mod.compiler_flags != null)
+		    {
+                Debug.Log("Adding compiler flags...");
+                foreach (string flag in mod.compiler_flags)
+                {
+                    this.AddOtherCFlags(flag);
+                }    
+		    }
 
-			Debug.Log( "Adding linker flags..." );
-			foreach( string flag in mod.linker_flags ) {
-				this.AddOtherLinkerFlags( flag );
-			}
+		    if (mod.linker_flags != null)
+		    {
+                Debug.Log("Adding linker flags...");
+                foreach (string flag in mod.linker_flags)
+                {
+                    this.AddOtherLinkerFlags(flag);
+                }		        
+		    }
 
 			this.Consolidate();
 		}
