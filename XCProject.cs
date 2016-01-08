@@ -90,7 +90,7 @@ namespace UnityEditor.XCodeEditor
             }
 
             projectFileInfo = new FileInfo(Path.Combine(this.filePath, "project.pbxproj"));
-            string contents = projectFileInfo.OpenText().ReadToEnd();
+			string contents = File.ReadAllText (Path.Combine (this.filePath, "project.pbxproj"));
 
             PBXParser parser = new PBXParser();
             _datastore = parser.Decode(contents);
